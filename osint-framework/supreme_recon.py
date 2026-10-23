@@ -19,12 +19,13 @@ def run_subdomains(target):
 
 def run_harvest(target):
     print(f"\n[*] [Module 2] Running theHarvester for email & asset exposure: {target}")
-    harvest_cmd = ["theharvester", "-d", target, "-b", "duckduckgo", "-l", "50"]
+    # Fixing command call to match Kali's expected binary/wrapper
+    harvest_cmd = ["theHarvester", "-d", target, "-b", "duckduckgo", "-l", "50"]
     try:
         res = subprocess.run(harvest_cmd, capture_output=True, text=True, timeout=60)
-        print(res.stdout if res.stdout else "[!] theHarvester execution completed with minimal output.")
-    except subprocess.TimeoutExpired:
-        print("[!] theHarvester timed out waiting for search engine response.")
+        print(res.stdout if res.stdout else "[!] theHarvester execution completed.")
+    except Exception as e:
+        print(f"[!] Note on execution: {e}")
 
 if __name__ == "__main__":
     banner()
