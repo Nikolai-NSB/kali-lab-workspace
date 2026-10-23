@@ -1,10 +1,12 @@
 import sys
 import subprocess
 import os
+import urllib.request
+import urllib.error
 
 def banner():
     print("=" * 60)
-    print("      MACE SUPREME OSINT FRAMEWORK - v1.0")
+    print("      MACE SUPREME OSINT FRAMEWORK - v2.0")
     print("=" * 60)
 
 def run_subdomains(target):
@@ -32,11 +34,10 @@ def run_metadata_inspection():
     output_dir = "outputs"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-        print(f"[-] Created missing '{output_dir}/' directory.")
     
     files = os.listdir(output_dir)
     if not files:
-        print("[-] No target files found in 'outputs/'. Drop files there to auto-inspect metadata.")
+        print("[-] No target files found in 'outputs/'.")
         return
 
     for file in files:
@@ -46,14 +47,45 @@ def run_metadata_inspection():
             meta_cmd = ["exiftool", file_path]
             subprocess.run(meta_cmd)
 
+def run_username_profiling(username):
+    print(f"\n[*] [Module 4] Scanning digital footprint for username: {username}")
+    platforms = {
+        "GitHub": f"https://github.com/{username}",
+        "Twitter/X": f"https://twitter.com/{username}",
+        "Instagram": f"https://instagram.com/{username}",
+        "Reddit": f"https://www.reddit.com/user/{username}"
+    }
+    
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    for platform, url in platforms.items():
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=5) as response:
+                if response.status == 200:
+                    print(f"    [+] [FOUND] {platform}: {url}")
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                print(f"    [-] [NOT FOUND] {platform}")
+            else:
+                print(f"    [?] [{e.code}] {platform}")
+        except Exception:
+            print(f"    [-] [UNREACHABLE] {platform}")
+
 if __name__ == "__main__":
     banner()
     if len(sys.argv) < 2:
-        print("Usage: python3 supreme_recon.py <target-domain.com>")
+        print("Usage:")
+        print("  Domain Recon:  python3 supreme_recon.py <target-domain.com>")
+        print("  User Profiling: python3 supreme_recon.py --user <username>")
         sys.exit(1)
     
-    target_domain = sys.argv[1]
-    run_subdomains(target_domain)
-    run_harvest(target_domain)
-    run_metadata_inspection()
+    if sys.argv[1] == "--user" and len(sys.argv) >= 3:
+        target_user = sys.argv[2]
+        run_username_profiling(target_user)
+    else:
+        target_domain = sys.argv[1]
+        run_subdomains(target_domain)
+        run_harvest(target_domain)
+        run_metadata_inspection()
+    
     print("\n[+] Reconnaissance suite execution complete.")
