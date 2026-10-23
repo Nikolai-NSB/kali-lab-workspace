@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import os
 
 def banner():
     print("=" * 60)
@@ -19,13 +20,31 @@ def run_subdomains(target):
 
 def run_harvest(target):
     print(f"\n[*] [Module 2] Running theHarvester for email & asset exposure: {target}")
-    # Fixing command call to match Kali's expected binary/wrapper
     harvest_cmd = ["theHarvester", "-d", target, "-b", "duckduckgo", "-l", "50"]
     try:
         res = subprocess.run(harvest_cmd, capture_output=True, text=True, timeout=60)
         print(res.stdout if res.stdout else "[!] theHarvester execution completed.")
     except Exception as e:
         print(f"[!] Note on execution: {e}")
+
+def run_metadata_inspection():
+    print(f"\n[*] [Module 3] Checking for local files in 'outputs/' for Exiftool analysis...")
+    output_dir = "outputs"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        print(f"[-] Created missing '{output_dir}/' directory.")
+    
+    files = os.listdir(output_dir)
+    if not files:
+        print("[-] No target files found in 'outputs/'. Drop files there to auto-inspect metadata.")
+        return
+
+    for file in files:
+        file_path = os.path.join(output_dir, file)
+        if os.path.isfile(file_path):
+            print(f"\n[+] Extracting metadata from: {file}")
+            meta_cmd = ["exiftool", file_path]
+            subprocess.run(meta_cmd)
 
 if __name__ == "__main__":
     banner()
@@ -36,4 +55,5 @@ if __name__ == "__main__":
     target_domain = sys.argv[1]
     run_subdomains(target_domain)
     run_harvest(target_domain)
+    run_metadata_inspection()
     print("\n[+] Reconnaissance suite execution complete.")
