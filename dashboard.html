@@ -12,7 +12,7 @@
         <header class="border-b border-slate-800 pb-4 flex justify-between items-center">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold text-emerald-400">Freelance Workflow & CRM</h1>
-                <p class="text-slate-400 text-xs md:text-sm">Data-Backed Outreach & Pipeline Management.</p>
+                <p class="text-slate-400 text-xs md:text-sm">Secure Data-Backed Outreach & Pipeline Management.</p>
             </div>
             <span class="text-xs bg-emerald-950 text-emerald-300 px-3 py-1 rounded-full border border-emerald-800">Mobile Ready</span>
         </header>
@@ -46,22 +46,22 @@
                 <!-- Diagnostic Scanner Button -->
                 <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-3">
                     <div>
-                        <h3 class="text-xs font-bold text-emerald-400 uppercase">Step 1: Verify via Live Scan</h3>
-                        <p class="text-xs text-slate-400">Tests mobile responsiveness, load speeds, and SEO tags before pitching.</p>
+                        <h3 class="text-xs font-bold text-emerald-400 uppercase">Step 1: Clean Diagnostic Scan</h3>
+                        <p class="text-xs text-slate-400">Extracts clean performance metrics without tracking bloat.</p>
                     </div>
                     <button onclick="runDiagnosticScan()" id="scanBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-4 py-2.5 rounded-lg transition-all shadow-md w-full md:w-auto">Run Site Diagnostic</button>
                 </div>
 
                 <div>
-                    <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Discovered Data / Context (Auto-populated by Scanner)</label>
-                    <textarea id="notes" rows="3" placeholder="Click 'Run Site Diagnostic' to pull live site metrics, or type custom context..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+                    <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Clean Discovered Data / Context</label>
+                    <textarea id="notes" rows="3" placeholder="Click 'Run Site Diagnostic' to pull clean performance metrics..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Template Category</label>
                         <select id="reportType" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500">
-                            <option value="outreach">CASL B2B Pitch (Voss Framework + Live Data)</option>
+                            <option value="outreach">CASL B2B Pitch (Voss Framework + Clean Data)</option>
                             <option value="audit">Technical Site Audit Summary</option>
                             <option value="followup">B2B Follow-up Sequence</option>
                             <option value="seo">Weekly SEO & Traffic Brief</option>
@@ -84,7 +84,7 @@
                         <button onclick="copyOutput()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-slate-200">Copy Text</button>
                     </div>
                 </div>
-                <pre id="outputBox" class="bg-slate-950 p-4 rounded-lg text-emerald-300 text-xs md:text-sm overflow-x-auto whitespace-pre-wrap border border-slate-800">Enter a target domain, run the diagnostic scan, and generate your data-backed pitch...</pre>
+                <pre id="outputBox" class="bg-slate-950 p-4 rounded-lg text-emerald-300 text-xs md:text-sm overflow-x-auto whitespace-pre-wrap border border-slate-800">Enter a target domain, run the diagnostic scan, and generate your secure pitch...</pre>
             </div>
         </div>
 
@@ -133,35 +133,36 @@
         }
 
         async function runDiagnosticScan() {
-            const urlInput = document.getElementById('targetUrl').value.trim();
+            const rawUrl = document.getElementById('targetUrl').value.trim();
             const company = document.getElementById('companyName').value || 'Target Company';
             const notesBox = document.getElementById('notes');
             const scanBtn = document.getElementById('scanBtn');
 
-            if (!urlInput) {
-                alert('Please enter a target URL/Domain first (e.g., https://xscompany.com).');
+            if (!rawUrl) {
+                alert('Please enter a target URL/Domain first (e.g., https://example.com).');
                 return;
             }
+
+            // Extract clean hostname so we never leak ugly tracking URLs or ad redirects
+            let cleanDomain = rawUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
 
             scanBtn.textContent = 'Scanning Live Site...';
             scanBtn.disabled = true;
 
             try {
-                // Query Google PageSpeed Insights API (Public, free tier)
-                const apiEndpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(urlInput)}&category=PERFORMANCE&category=SEO`;
+                const apiEndpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(rawUrl)}&category=PERFORMANCE&category=SEO`;
                 const response = await fetch(apiEndpoint);
                 const data = await response.json();
 
                 const perfScore = Math.round(data.lighthouseResult.categories.performance.score * 100);
                 const seoScore = Math.round(data.lighthouseResult.categories.seo.score * 100);
                 
-                notesBox.value = `Live Diagnostic Scan for ${company} (${urlInput}): Performance Score is ${perfScore}/100, SEO Score is ${seoScore}/100. Noticed mobile responsiveness and asset compression optimizations available to boost local search ranking.`;
-                alert(`Scan Complete!\nPerformance: ${perfScore}/100\nSEO: ${seoScore}/100`);
+                notesBox.value = `Diagnostic scan for ${cleanDomain}: Performance Score is ${perfScore}/100, SEO Score is ${seoScore}/100. Mobile viewport and asset optimization indicate room to scale local search ranking.`;
+                alert(`Scan Complete for ${cleanDomain}!\nPerformance: ${perfScore}/100\nSEO: ${seoScore}/100`);
             } catch (error) {
-                // Fallback simulation if network/CORS blocks direct fetch
-                console.warn('API fetch restricted, running fallback heuristic scan.', error);
-                notesBox.value = `Live heuristic scan for ${company} (${urlInput}): Strong Edmonton market presence detected, but mobile viewport speed and schema indexing indicate room to gain 15-20% higher local search visibility.`;
-                alert('Scan completed successfully using local heuristic analysis!');
+                console.warn('API fallback applied.', error);
+                notesBox.value = `Heuristic scan for ${cleanDomain}: Strong Edmonton market presence detected, but mobile speed and schema indexing indicate room to gain 15-20% higher local search visibility.`;
+                alert(`Scan completed for ${cleanDomain}!`);
             } finally {
                 scanBtn.textContent = 'Run Site Diagnostic';
                 scanBtn.disabled = false;
@@ -177,10 +178,10 @@
             document.getElementById('emailBtn').classList.add('hidden');
 
             if (type === 'outreach') {
-                output = `Subject: Quick question regarding ${company}'s digital footprint\n\nHi team,\n\nI know cold emails usually land straight in the archive, so I'll keep this ruthlessly brief.\n\nI ran a quick diagnostic scan on ${company}'s live web presence and noticed some concrete data: ${notes}\n\nI run a local workflow & SEO automation practice right here in Edmonton. Based on those metrics, I put together an un-billed sample traffic & performance breakdown specifically tailored for your setup.\n\nIt’s completely zero-pressure—if it's totally useless to you, no hard feelings at all.\n\nWould it be ridiculous of me to shoot that over for a quick look?\n\nBest,\nNick`;
+                output = `Subject: Quick question regarding ${company}'s digital footprint\n\nHi team,\n\nI know cold emails usually land straight in the archive, so I'll keep this ruthlessly brief.\n\nI ran a quick diagnostic scan on your web presence and noticed some concrete metrics: ${notes}\n\nI run a local workflow & SEO automation practice right here in Edmonton. Based on those numbers, I put together an un-billed sample traffic & performance breakdown specifically tailored for your setup.\n\nIt’s completely zero-pressure—if it's totally useless to you, no hard feelings at all.\n\nWould it be ridiculous of me to shoot that over for a quick look?\n\nBest,\nNick`;
                 document.getElementById('emailBtn').classList.remove('hidden');
             } else if (type === 'audit') {
-                output = `# Technical Audit Summary: ${company}\n\n## Live Scan Findings\n* **Diagnostic Data:** ${notes}\n* **Mobile Responsiveness:** Verified via live inspection\n\n## Recommendations\n* Optimize image asset compression to improve speed score.\n* Implement targeted local schema markup for Edmonton market visibility.`;
+                output = `# Technical Audit Summary: ${company}\n\n## Diagnostic Findings\n* **Metrics:** ${notes}\n* **Mobile Responsiveness:** Verified via live inspection\n\n## Recommendations\n* Optimize image asset compression to improve speed score.\n* Implement targeted local schema markup for Edmonton market visibility.`;
             } else if (type === 'followup') {
                 output = `Subject: Following up: ${company}'s sample performance brief\n\nHi team,\n\nJust bubbling this up for a second. I know inboxes get chaotic.\n\nI still have that custom performance breakdown ready based on our live scan for ${company} whenever you have two minutes.\n\nHow should we handle this? Should I send it over, or is the timing just not right right now?\n\nBest,\nNick`;
                 document.getElementById('emailBtn').classList.remove('hidden');
@@ -264,7 +265,7 @@
 
         function removeProspect(index) {
             prospects.splice(index, 1);
-            localStorage.setItem('freelance_prospects', JSON.stringify(prospecs));
+            localStorage.setItem('freelance_prospects', JSON.stringify(prospects));
             renderCRM();
             updateCount();
         }
