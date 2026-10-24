@@ -12,7 +12,7 @@
         <header class="border-b border-slate-800 pb-4 flex justify-between items-center">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold text-emerald-400">Freelance Workflow & CRM</h1>
-                <p class="text-slate-400 text-xs md:text-sm">Reports, CASL Outreach, and Prospect Tracking.</p>
+                <p class="text-slate-400 text-xs md:text-sm">Reports, Voss Outreach, and Prospect Tracking.</p>
             </div>
             <span class="text-xs bg-emerald-950 text-emerald-300 px-3 py-1 rounded-full border border-emerald-800">Mobile Ready</span>
         </header>
@@ -27,26 +27,30 @@
         <div id="section-generator" class="space-y-6">
             <div class="bg-slate-800 rounded-xl p-5 shadow-xl border border-slate-700 space-y-4">
                 <h2 class="text-md font-semibold text-slate-200">Deliverable & Outreach Creator</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Client / Target Business Name</label>
-                        <input type="text" id="clientName" placeholder="e.g. Acme Corp" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500">
+                        <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Company Name</label>
+                        <input type="text" id="companyName" placeholder="e.g. XS Company Inc" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Target Email</label>
+                        <input type="text" id="targetEmail" placeholder="e.g. info@xscompany.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
                         <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Category / Template</label>
                         <select id="reportType" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500">
+                            <option value="outreach">CASL B2B Pitch (Voss Framework)</option>
+                            <option value="followup">B2B Follow-up Sequence</option>
                             <option value="seo">Weekly SEO & Traffic Brief</option>
                             <option value="project">Project Status & Milestones</option>
                             <option value="invoice">Professional Service Invoice</option>
                             <option value="audit">Technical Site Audit Summary</option>
-                            <option value="outreach">CASL-Compliant B2B Pitch</option>
-                            <option value="followup">B2B Follow-up Sequence</option>
                         </select>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Key Notes, Metrics or Target Email</label>
-                    <textarea id="notes" rows="3" placeholder="Enter metrics, project scope, or client contact email for direct outreach..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+                    <label class="block text-xs uppercase text-slate-400 mb-1 font-semibold">Specific Observation / Local Context</label>
+                    <textarea id="notes" rows="3" placeholder="e.g. Strong Edmonton footprint, but mobile search visibility has room to scale..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
                 </div>
                 <div class="flex flex-col md:flex-row gap-3">
                     <button onclick="generateContent()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg transition-all shadow-md">Generate Deliverable</button>
@@ -78,8 +82,8 @@
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-900 text-slate-400 uppercase text-xs">
                             <tr>
-                                <th class="p-3">Business</th>
-                                <th class="p-3">Type</th>
+                                <th class="p-3">Company</th>
+                                <th class="p-3">Email</th>
                                 <th class="p-3">Status</th>
                                 <th class="p-3">Actions</th>
                             </tr>
@@ -112,39 +116,43 @@
         }
 
         function generateContent() {
-            const name = document.getElementById('clientName').value || '[Client Name]';
+            const company = document.getElementById('companyName').value || 'Target Company';
             const type = document.getElementById('reportType').value;
-            const notes = document.getElementById('notes').value || 'Standard delivery specifications applied.';
+            const notes = document.getElementById('notes').value || 'Strong local footprint with room for digital growth.';
             let output = '';
 
             document.getElementById('emailBtn').classList.add('hidden');
 
-            if (type === 'seo') {
-                output = `# Weekly Performance Brief: ${name}\n**Week Ending:** October 2026\n\n## 1. Executive Summary\n* **Status:** Active & Optimized\n* **Notes:** ${notes}\n\n## 2. Traffic & Acquisition\n* Organic search momentum holding strong.\n* Regular technical audits clear.\n\n## 3. Recommended Actions\n1. Publish targeted content updates.\n2. Review top keyword rankings.`;
-            } else if (type === 'project') {
-                output = `# Project Status Report: ${name}\n**Milestone Target:** Q4 2026\n\n## 1. Milestone Health\n* **Status:** On Schedule\n* **Notes:** ${notes}\n\n## 2. Deliverables Update\n* Core tasks advancing as projected.\n* Zero blocking issues detected.`;
-            } else if (type === 'invoice') {
-                output = `# Service Invoice: ${name}\n**Date:** October 24, 2026\n\n## Line Items\n* Automated Workflow Setup & Reporting Brief: $350.00\n* Local SEO Optimization & Prospecting Pipeline: $250.00\n\n**Total Due:** $600.00 CAD\n**Payment Terms:** Net 30`;
-            } else if (type === 'audit') {
-                output = `# Technical Audit Summary: ${name}\n\n## Overview\n* **Performance Score:** 94/100\n* **Mobile Responsiveness:** Verified\n* **Notes:** ${notes}\n\n## Recommendations\n* Optimize image asset compression.\n* Implement schema markup for local service visibility.`;
-            } else if (type === 'outreach') {
-                output = `Subject: Quick question regarding ${name}'s organic search footprint\n\nHi Team,\n\nI was reviewing local service sites in Edmonton and came across ${name}. ${notes}\n\nI run a local reporting service here in Edmonton that automates weekly traffic and SEO performance briefs for businesses like yours.\n\nI put together a quick, un-billed sample summary of what a weekly tracking report looks like for a site in your niche. If you'd like me to shoot it over, let me know!\n\nBest regards,\nNick`;
+            if (type === 'outreach') {
+                output = `Subject: Quick question regarding ${company}'s local footprint\n\nHi team,\n\nI know cold emails usually land straight in the archive, so I'll keep this ruthlessly brief.\n\nIt seems like you've built a rock-solid reputation here in Edmonton. ${notes}\n\nI run a local workflow & SEO automation practice right here in the city. While mapping out local niches, I put together a quick, un-billed sample traffic breakdown specifically tailored for ${company}.\n\nIt’s completely zero-pressure—if it's totally useless to you, no hard feelings at all.\n\nWould it be ridiculous of me to shoot that over for a quick look?\n\nBest,\nNick`;
                 document.getElementById('emailBtn').classList.remove('hidden');
             } else if (type === 'followup') {
-                output = `Subject: Following up: ${name}'s sample performance brief\n\nHi Team,\n\nJust bubbling this to the top of your inbox. I recently pulled together a sample SEO & traffic visibility breakdown tailored for ${name}.\n\nNo pressure at all, but let me know if you'd like me to forward over the PDF/summary for your review.\n\nBest regards,\nNick`;
+                output = `Subject: Following up: ${company}'s sample performance brief\n\nHi team,\n\nJust bubbling this up for a second. I know inboxes get chaotic.\n\nI still have that custom sample traffic breakdown ready for ${company} whenever you have two minutes to glance at it.\n\nHow should we handle this? Should I send it over, or is the timing just not right right now?\n\nBest,\nNick`;
                 document.getElementById('emailBtn').classList.remove('hidden');
+            } else if (type === 'seo') {
+                output = `# Weekly Performance Brief: ${company}\n**Week Ending:** October 2026\n\n## 1. Executive Summary\n* **Status:** Active & Optimized\n* **Notes:** ${notes}\n\n## 2. Traffic & Acquisition\n* Organic search momentum holding strong.\n* Regular technical audits clear.\n\n## 3. Recommended Actions\n1. Publish targeted content updates.\n2. Review top keyword rankings.`;
+            } else if (type === 'project') {
+                output = `# Project Status Report: ${company}\n**Milestone Target:** Q4 2026\n\n## 1. Milestone Health\n* **Status:** On Schedule\n* **Notes:** ${notes}\n\n## 2. Deliverables Update\n* Core tasks advancing as projected.\n* Zero blocking issues detected.`;
+            } else if (type === 'invoice') {
+                output = `# Service Invoice: ${company}\n**Date:** October 24, 2026\n\n## Line Items\n* Automated Workflow Setup & Reporting Brief: $350.00\n* Local SEO Optimization & Prospecting Pipeline: $250.00\n\n**Total Due:** $600.00 CAD\n**Payment Terms:** Net 30`;
+            } else if (type === 'audit') {
+                output = `# Technical Audit Summary: ${company}\n\n## Overview\n* **Performance Score:** 94/100\n* **Mobile Responsiveness:** Verified\n* **Notes:** ${notes}\n\n## Recommendations\n* Optimize image asset compression.\n* Implement schema markup for local service visibility.`;
             }
 
             document.getElementById('outputBox').textContent = output;
         }
 
         function sendEmailDirect() {
-            const name = document.getElementById('clientName').value || 'contact@business.com';
+            const email = document.getElementById('targetEmail').value || '';
             const text = document.getElementById('outputBox').textContent;
             const lines = text.split('\n');
             const subject = lines[0].replace('Subject: ', '');
             const body = lines.slice(2).join('\n');
-            window.location.href = `mailto:${name}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            if (!email) {
+                alert('Please enter a Target Email address.');
+                return;
+            }
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
         function copyOutput() {
@@ -154,13 +162,14 @@
         }
 
         function saveToCRM() {
-            const name = document.getElementById('clientName').value;
+            const company = document.getElementById('companyName').value;
+            const email = document.getElementById('targetEmail').value;
             const type = document.getElementById('reportType').value;
-            if (!name) {
-                alert('Please enter a Client / Business Name first.');
+            if (!company) {
+                alert('Please enter a Company Name first.');
                 return;
             }
-            prospects.push({ id: Date.now(), name, type, status: 'Contacted' });
+            prospects.push({ id: Date.now(), company, email: email || 'N/A', type, status: 'Contacted' });
             localStorage.setItem('freelance_prospects', JSON.stringify(prospects));
             updateCount();
             alert('Added to Prospect CRM!');
@@ -180,8 +189,8 @@
             prospects.forEach((p, index) => {
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-700">
-                        <td class="p-3 font-medium text-slate-200">${p.name}</td>
-                        <td class="p-3 text-slate-400 uppercase text-xs">${p.type}</td>
+                        <td class="p-3 font-medium text-slate-200">${p.company}</td>
+                        <td class="p-3 text-slate-400 text-xs">${p.email}</td>
                         <td class="p-3">
                             <select onchange="updateStatus(${index}, this.value)" class="bg-slate-900 border border-slate-700 rounded p-1 text-xs text-emerald-400">
                                 <option ${p.status==='Pending'?'selected':''}>Pending</option>
