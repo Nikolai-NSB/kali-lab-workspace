@@ -307,5 +307,53 @@ Independent Business Analyst & Automation Consultant
 Edmonton, AB`;
     }
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const generateBtn = document.querySelector('button.btn-success, button:contains("Generate Pitch"), #generatePitchBtn') || Array.from(document.querySelectorAll('button')).find(el => el.textContent.includes('Generate Pitch'));
+    
+    if (generateBtn) {
+        generateBtn.addEventListener('click', () => {
+            const nameField = document.querySelector('input[placeholder*="Company"], input#busName, input[type="text"]');
+            const companyName = nameField ? nameField.value || "Local Business" : "Local Business";
+            
+            const pitch = `Subject: Quick mobile audit for ${companyName} (Edmonton)
+
+Hi ${companyName} Team,
+
+I ran a quick mobile site audit and noticed mobile performance scores lagging behind local Edmonton competitors who are currently capturing mobile traffic.
+
+To fix this and protect your digital growth, I am offering our Monthly Local Growth Retainer for $800 CAD/mo (20% below standard local agency rates). This includes continuous site performance monitoring, local SEO tracking, and pipeline protection.
+
+PAYMENT TERMS:
+- Billed monthly in advance via secure Interac e-Transfer (Autodeposit). No credit card processing or bank linking required.
+
+STANDARD TERMS OF SERVICE:
+1. Independent Contractor: Consultant acts solely as an independent contractor.
+2. Payment Terms: Invoiced and payable immediately via secure Interac e-Transfer. Services may be paused if payments are more than 5 days overdue.
+3. Limitation of Liability: Consultant shall not be liable for indirect, incidental, or consequential damages. Total aggregate liability shall not exceed total fees actually paid by the Client in the preceding 30 days.
+4. No Guarantee of Search Rankings: Consultant applies professional industry standards but does not guarantee specific search rankings or traffic increases.
+5. Third-Party Services: Consultant is not responsible for outages, API deprecations, or policy changes enacted by third-party platforms.
+6. Scope: Work outside the defined scope of the Monthly Growth Retainer will be billed separately.
+
+---
+CASL Compliance & Opt-Out Notice:
+If you no longer wish to receive business growth audits from us, simply reply with "Opt-Out" and your address will be permanently removed from our active list.
+Office: Edmonton, AB, Canada`;
+
+            // Find output preview area
+            const outputPreview = document.querySelector('.generated-output-preview, pre, textarea, div[id*="output"], div[class*="output"]');
+            if (outputPreview) {
+                if (outputPreview.tagName === 'TEXTAREA' || outputPreview.tagName === 'INPUT') {
+                    outputPreview.value = pitch;
+                } else {
+                    outputPreview.innerText = pitch;
+                }
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>
