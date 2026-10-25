@@ -355,5 +355,110 @@ Office: Edmonton, AB, Canada`;
 });
 </script>
 
+
+<style>
+    .crm-section { margin-top: 24px; background: #1e293b; border: 1px solid #334155; padding: 16px; border-radius: 12px; }
+    .crm-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.85rem; }
+    .crm-table th, .crm-table td { padding: 8px; text-align: left; border-bottom: 1px solid #334155; color: #cbd5e1; }
+    .crm-table th { color: #38bdf8; font-weight: 600; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .badge-new { background: #334155; color: #f8fafc; }
+    .badge-emailed { background: #0284c7; color: white; }
+    .badge-replied { background: #d97706; color: white; }
+    .badge-paid { background: #16a34a; color: white; }
+    .crm-form { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .crm-form input { flex: 1; min-width: 120px; padding: 8px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; font-size: 0.85rem; }
+    .crm-form button { background: #16a34a; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+</style>
+
+<div class="crm-section">
+    <h3>Edmonton Prospect Pipeline CRM</h3>
+    <p style="font-size: 0.8rem; color: #94a3b8;">Track your leads from initial cold hook to Autodeposit payment.</p>
+    
+    <div class="crm-form">
+        <input type="text" id="crmName" placeholder="Business Name">
+        <input type="text" id="crmEmail" placeholder="Email Address">
+        <select id="crmStage" style="background: #0f172a; color: white; border: 1px solid #334155; padding: 8px; border-radius: 6px;">
+            <option value="New">New Lead</option>
+            <option value="Emailed">Emailed (Hook)</option>
+            <option value="Replied">Replied (Retainer)</option>
+            <option value="Paid">Paid (Autodeposit)</option>
+        </select>
+        <button onclick="addProspect()">Add Lead</button>
+    </div>
+
+    <table class="crm-table">
+        <thead>
+            <tr>
+                <th>Business</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="crmBody">
+            <!-- Dynamically populated -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+let prospects = JSON.parse(localStorage.getItem('edmonton_prospects')) || [
+    { name: "Eagle Plumbing", email: "contact@eagleplumbing.ca", status: "Emailed" }
+];
+
+function renderCRM() {
+    const tbody = document.getElementById('crmBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    prospects.forEach((p, index) => {
+        let badgeClass = 'badge-new';
+        if (p.status === 'Emailed') badgeClass = 'badge-emailed';
+        if (p.status === 'Replied') badgeClass = 'badge-replied';
+        if (p.status === 'Paid') badgeClass = 'badge-paid';
+
+        tbody.innerHTML += `
+            <tr>
+                <td><b>${p.name}</b><br><span style="font-size:0.75rem; color:#94a3b8;">${p.email}</span></td>
+                <td><span class="badge ${badgeClass}">${p.status}</span></td>
+                <td>
+                    <button onclick="advanceStatus(${index})" style="background:#0284c7; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer;">Advance</button>
+                    <button onclick="deleteProspect(${index})" style="background:#dc2626; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer; margin-left:4px;">X</button>
+                </td>
+            </tr>
+        `;
+    });
+    localStorage.setItem('edmonton_prospects', JSON.stringify(prospects));
+}
+
+function addProspect() {
+    const name = document.getElementById('crmName').value;
+    const email = document.getElementById('crmEmail').value;
+    const status = document.getElementById('crmStage').value;
+    if (!name) return alert('Enter business name');
+    
+    prospects.push({ name, email, status });
+    document.getElementById('crmName').value = '';
+    document.getElementById('crmEmail').value = '';
+    renderCRM();
+}
+
+function advanceStatus(index) {
+    const stages = ["New", "Emailed", "Replied", "Paid"];
+    let currentIdx = stages.indexOf(prospects[index].status);
+    if (currentIdx < stages.length - 1) {
+        prospects[index].status = stages[currentIdx + 1];
+        renderCRM();
+    }
+}
+
+function deleteProspect(index) {
+    prospects.splice(index, 1);
+    renderCRM();
+}
+
+document.addEventListener('DOMContentLoaded', renderCRM);
+</script>
+
 </body>
 </html>
